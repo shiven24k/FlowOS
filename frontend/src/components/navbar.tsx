@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Settings } from "lucide-vue-next";
+import React, { useState } from "react";
+import { SettingsIcon } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipArrow,
+  TooltipTrigger,
+  TooltipProvider,
+} from "./ui/tooltip.tsx";
 import "../App.css";
 
 const Navbar: React.FC = () => {
@@ -10,14 +17,24 @@ const Navbar: React.FC = () => {
   }
   return (
     <>
-      <nav className='w-full h-[8vh] flex justify-end cursor-pointer p-4'>
+      <nav className='w-full h-[10vh]  flex justify-end items-center cursor-pointer p-4'>
         <ul>
           {/* here we will add letter from user email  */}
-          <div
-            className='w-10 h-10 rounded-full bg-gray-300'
-            onClick={() => {
-              togglemodal();
-            }}></div>
+          <TooltipProvider delayDuration={0}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div
+                  className='w-10 h-10 rounded-full bg-gray-300'
+                  onClick={() => {
+                    togglemodal();
+                  }}></div>
+              </TooltipTrigger>
+              <TooltipContent side='top' align='center' sideOffset={-18}>
+                profile
+                <TooltipArrow className='fill-black' />
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </ul>
       </nav>
       {modal === true && (
@@ -32,7 +49,7 @@ const Navbar: React.FC = () => {
             </div>
           </div>
           <div className='w-full h-[10%]  flex'>
-            {/* <Settings />  gotta add type for this lucdide icon*/}
+            <SettingsIcon />
             <h2>Settings</h2>
           </div>
           <h2>Theme (will add toggle here)</h2>
