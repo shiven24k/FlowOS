@@ -1,0 +1,6 @@
+{
+    "migrationsTable": "migrations",
+    "migrationsFolder": "./migrations",
+    "migrate": "ts-node --project tsconfig.json",
+    "seed": "ts-node --project tsconfig.json"
+}
