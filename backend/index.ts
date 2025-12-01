@@ -1,33 +1,29 @@
 import express from "express";
 import cors from "cors";
-import { Router } from "express";
-import db from "./src/config/db"
-import auth from "./src/routes/auth-routes";
+import router from "./src/routes/routes";
+import cookieParser from "cookie-parser";
+import connectDB from "./src/config/db";
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// Middlewares
+const allowedOrigin = "";
+
+app.use(
+  cors({
+    origin: allowedOrigin,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
 app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
-app.use("/api/auth",auth)
-//Routes
+app.use("/api", router);
 
-
-app.get("/", (req, res) => {
-  res.send("hey backend is working");
-});
-
-app.get("/get-db", async(req,res)=> {
-  try {
-    const result = await db.query("SELECT NOW()");
-    res.json(result.rows[0]);
-  }catch(error){
-    console.log(error);
-  }
-})
-
-
+connectDB();
 
 app.listen(PORT, (err) => {
   console.log(`app is listening on ${PORT}`);
