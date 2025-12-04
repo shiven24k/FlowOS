@@ -1,12 +1,6 @@
 import React, { useState } from "react";
-import { SettingsIcon } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipArrow,
-  TooltipTrigger,
-  TooltipProvider,
-} from "./ui/tooltip.tsx";
+import { ChevronUp } from "lucide-react";
+import { AccountMenu } from "./ui/modals";
 import "../App.css";
 
 const Navbar: React.FC = () => {
@@ -15,53 +9,24 @@ const Navbar: React.FC = () => {
   function togglemodal() {
     setModal((prev) => !prev);
   }
+
   return (
     <>
-      <nav className='w-full h-[10vh]  flex justify-end items-center cursor-pointer p-4'>
-        <ul>
-          {/* here we will add letter from user email  */}
-          <TooltipProvider delayDuration={0}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div
-                  className='w-10 h-10 rounded-full bg-gray-300'
-                  onClick={() => {
-                    togglemodal();
-                  }}></div>
-              </TooltipTrigger>
-              <TooltipContent side='top' align='center' sideOffset={-18}>
-                profile
-                <TooltipArrow className='fill-black' />
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </ul>
-      </nav>
-      {modal === true && (
-        <div
-          className='bg-white h-[30vh] w-[20vw] absolute right-4 top-[10vh] p-2 
-            flex flex-col justify-around rounded-sm shadow-xl z-40'>
-          <div className='w-full h-[20%] flex gap-2'>
-            <div className='w-10 h-10 rounded-full bg-gray-300'></div>
-            <div className='flex flex-col'>
-              <h1>UserName</h1>
-              <h2>useremail</h2>
-            </div>
+      <nav className='w-full h-[8vh]  z-40  cursor-pointer rounded-sm p-1'>
+        <div className='flex items-center h-full justify-around  hover:bg-gray-300'>
+          <div className=' w-14 bg-blue-500 h-14 rounded-sm'></div>
+          <div className='flex flex-col w-[50%]'>
+            <h1>UserName</h1>
+            <h2>useremail</h2>
           </div>
-          <div className='w-full h-[10%]  flex'>
-            <SettingsIcon />
-            <h2>Settings</h2>
-          </div>
-          <h2>Theme (will add toggle here)</h2>
-          <hr />
-          <h2>Workspaces</h2>
-          <div>Here will be user workspace</div>
-          <hr />
-          <h2 className='w-full h-[20%] p-2 rounded-sm cursor-pointer hover:bg-gray-200'>
-            Logout
-          </h2>
+          <ChevronUp
+            onClick={() => {
+              togglemodal();
+            }}
+          />
         </div>
-      )}
+      </nav>
+      {modal === true && <AccountMenu />}
     </>
   );
 };
