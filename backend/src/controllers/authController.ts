@@ -11,7 +11,7 @@ const ACCESS_TOKEN = env.ACCESS_TOKEN_SECRET;
 const REFRESH_TOKEN = env.REFRESH_TOKEN_SECRET;
 
 function createAccessToken(userId: string) {
-  return jwt.sign({ sub: userId }, ACCESS_TOKEN, { expiresIn: "15m" });
+  return jwt.sign({ sub: userId }, ACCESS_TOKEN, { expiresIn: "1hr" });
 }
 
 function createRefreshToken(userId: string) {
@@ -34,21 +34,21 @@ const handleSignup = async(req: Request, res: Response) => {
         )
         const userId = newUser.rows[0].id;
 
-        const accessToken = createAccessToken(userId);
-        const refreshToken = createRefreshToken(userId);
+        // const accessToken = createAccessToken(userId);
+        // const refreshToken = createRefreshToken(userId);
         
-        // Store refresh token in database
-        await db.query("UPDATE users SET refreshtoken = $1 WHERE id = $2",[refreshToken,userId]);
+        // // Store refresh token in database
+        // await db.query("UPDATE users SET refreshtoken = $1 WHERE id = $2",[refreshToken,userId]);
 
-        // Set access token in cookies
-        res.cookie("session_token", accessToken, {
-            httpOnly: true,
-            secure: false,
-            maxAge: 15 * 60 * 1000, //15 min
-        })
+        // // Set access token in cookies
+        // res.cookie("session_token", accessToken, {
+        //     httpOnly: true,
+        //     secure: false,
+        //     maxAge: 15 * 60 * 1000, //15 min
+        // })
         res.status(201).json({
             user: newUser.rows[0],
-            refreshToken,
+            // refreshToken,
             message: "Signup Succeed"
         })
     }catch(error){
@@ -74,14 +74,14 @@ const handleLogin = async(req: Request, res: Response) => {
         if(!isPasswordValidated){
             return res.status(400).json({message:"Invalid credentials"});
         }
-        const accessToken = createAccessToken(user.id);
-        const refreshToken = createRefreshToken(user.id);
+        // const accessToken = createAccessToken(user.id);
+        // const refreshToken = createRefreshToken(user.id);
         
-        res.cookie("session_token", accessToken, {
-            httpOnly: true,
-            secure: false,
-            maxAge: 15 * 60 * 1000, //15 min
-        })
+        // res.cookie("session_token", accessToken, {
+        //     httpOnly: true,
+        //     secure: false,
+        //     maxAge: 15 * 60 * 1000, //15 min
+        // })
         
         //return token in response
         res.json({
@@ -90,7 +90,7 @@ const handleLogin = async(req: Request, res: Response) => {
                 username:user.username,
                 email:user.email
             },
-            refreshToken,
+            // refreshToken,
             message: "Login Succeed"
         })
 

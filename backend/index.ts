@@ -3,7 +3,7 @@ import cors from "cors";
 import router from "./src/routes/routes";
 import cookieParser from "cookie-parser";
 import connectDB from "./src/config/db";
-import authRoutes from "./src/routes/auth-routes"
+import authRoutes from "./src/routes/routes"
 
 const app = express();
 const PORT = process.env.PORT || 8000;
