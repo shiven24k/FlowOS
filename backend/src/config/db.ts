@@ -1,16 +1,13 @@
-import { Client} from "pg";
+import pg from "pg";
 import dotenv from "dotenv";
 dotenv.config();
-
-function connectDB() {
-  const connection = new Client({
+const {Pool} = pg;
+const pool = new Pool( {
     connectionString: process.env.DATABASE_URL,
   });
-  try {
-    connection.connect().then(() => console.log("Connected schema"));
-  } catch (error) {
-    console.log("error while connecting Db ", error);
-  }
-}
+  pool.on("connect",() => {
+    console.log("Connected the db")
+  })
 
-export default connectDB;
+
+export default pool;
