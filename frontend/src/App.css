@@ -129,3 +129,16 @@ body {
   background-color: #e8e8e8;
   font-family: "Roboto", sans-serif;
 }
+
+.visibility-select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  outline: none;
+  background: white;
+}
+
+.visibility-select:focus {
+  border-color: #4a90e2;
+}

@@ -6,6 +6,7 @@ const inputWrapperStyles = cva(
   "flex items-center h-12 border border-gray-200 rounded-xl px-3 transition-all",
   {
     variants: {
+      
       focus: {
         true: "ring-2 ring-blue-500 border-blue-500",
       },
@@ -26,7 +27,7 @@ const inputStyles = cva(
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon: ComponentType<{ size?: number; className?: string }>;
-  className: string;
+  className?: string;
 }
 
 export function Input({ icon: Icon, className, ...props }: InputProps) {

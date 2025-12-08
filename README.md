@@ -8,3 +8,4 @@ scripts in package.json:
 
 "dev": "tsx watch index.ts", >>>>>     tsx, a fast TypeScript/ESM runner.
 "build": "tsc"               >>>>>     this will compile our typescript code 
+ npm i --save-dev @types/node  >>>> for node types declaration
