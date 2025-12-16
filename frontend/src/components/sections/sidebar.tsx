@@ -36,10 +36,10 @@ const SideBar: React.FC = () => {
         <div className='w-full flex flex-col justify-center mb-12'>
           <div className='w-full h-fit flex flex-col justify-center cursor-pointer items-center rounded-md p-2 '>
             <Button variant='ghost'>
-              <Lightbulb /> FeedBack
+              <Lightbulb className="w-5 h-5" /> FeedBack
             </Button>
             <Button variant='ghost'>
-              <Info /> Help
+              <Info  className="w-5 h-5"/> Help
             </Button>
           </div>
           <hr className='w-[90%] mt-2 mx-auto' />

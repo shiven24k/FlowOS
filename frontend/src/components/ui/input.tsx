@@ -26,7 +26,7 @@ const inputStyles = cva(
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon: ComponentType<{ size?: number; className?: string }>;
-  className: string;
+  className?: string;
 }
 
 export function Input({ icon: Icon, className, ...props }: InputProps) {
