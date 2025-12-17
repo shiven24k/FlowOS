@@ -8,8 +8,10 @@ import { Button } from "../components/ui/button";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const LoginForm: React.FC<{ onToggle: () => void }> = ({ onToggle}) => {
+const LoginForm: React.FC = () => {
   const [name, setName] = useState("");
+  const navigate = useNavigate();
+
   return (
     <div className='w-screen h-screen flex items-center justify-center'>
       <FormContainer>
@@ -51,7 +53,9 @@ const LoginForm: React.FC<{ onToggle: () => void }> = ({ onToggle}) => {
         <div className='w-full flex gap-5 items-center justify-center'>
           <p className='text-center text-sm mt-1'>Don't have an account?</p>
           <button
-            onClick={onToggle}
+            onClick={() => {
+              navigate("/signup");
+            }}
             className='text-blue-600 font-medium cursor-pointer'>
             Sign up
           </button>
@@ -74,8 +78,9 @@ const LoginForm: React.FC<{ onToggle: () => void }> = ({ onToggle}) => {
   );
 };
 
-const SignUpForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
+const SignUpForm: React.FC = () => {
   const [name, setName] = useState("");
+  const navigate = useNavigate();
   return (
     <div className='w-screen h-screen flex items-center justify-center'>
       <FormContainer>
@@ -117,7 +122,9 @@ const SignUpForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
         <div className='w-full flex gap-5 items-center justify-center'>
           <p className='text-center text-sm mt-1'>Don't have an account?</p>
           <button
-            onClick={onToggle}
+            onClick={() => {
+              navigate("/login");
+            }}
             className='text-blue-600 underline font-medium cursor-pointer '>
             Login
           </button>
@@ -140,21 +147,4 @@ const SignUpForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
   );
 };
 
-const Auth: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
-    const toggleForm = () => {
-    setIsLogin(!isLogin);
-  };
-  return (
-    <>
-      {isLogin ? (
-        <LoginForm onToggle={toggleForm}/>
-      ):(
-        <SignUpForm onToggle={toggleForm}/>
-      )}
-    </>
-  )
-
-}
-
-export { Auth };
+export { SignUpForm, LoginForm };
