@@ -1,12 +1,12 @@
-import type React from "react";
-import { User, Mail, Lock } from "lucide-react";
-import "../App.css";
+import React, { useState } from "react";
 import { FormContainer } from "../components/ui/form";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { User, Mail, Lock } from "lucide-react";
+import { iUserSignupdata } from "@/types";
+import "../App.css";
 
 const LoginForm: React.FC = () => {
   const [name, setName] = useState("");
@@ -34,6 +34,9 @@ const LoginForm: React.FC = () => {
             placeholder='Enter your password'
             icon={Lock}
             type='password'
+            required
+            minLength={8}
+            maxLength={12}
           />
         </div>
 
@@ -48,7 +51,9 @@ const LoginForm: React.FC = () => {
           </button>
         </div>
 
-        <Button className='mt-3'>Sign In</Button>
+        <Button className='mt-3' type='submit'>
+          Sign In
+        </Button>
 
         <div className='w-full flex gap-5 items-center justify-center'>
           <p className='text-center text-sm mt-1'>Don't have an account?</p>
@@ -79,31 +84,64 @@ const LoginForm: React.FC = () => {
 };
 
 const SignUpForm: React.FC = () => {
-  const [name, setName] = useState("");
+  const [Form, setForm] = useState<iUserSignupdata>({
+    name: "",
+    email: "",
+    password: "",
+  });
+
   const navigate = useNavigate();
+
+  function handleForm(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm((prev) => ({
+      ...prev,
+      [e.target.id]: e.target.value,
+    }));
+  }
+
+  function validateEmail(email: string) {
+    const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+    return emailPattern.test(email);
+  }
+
+  function submitForm(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (Form.name.length < 6) return;
+    if (Form.password.length < 8) return;
+    if (!validateEmail(Form.email)) return;
+    
+  }
+
   return (
     <div className='w-screen h-screen flex items-center justify-center'>
-      <FormContainer>
+      <FormContainer onsubmit={submitForm}>
         <h1>Here will be logo</h1>
         <div className='flex flex-col gap-1'>
           <Label> Name </Label>
           <Input
             placeholder='Enter your name'
             icon={User}
-            value={name}
+            id='name'
+            required
+            minLength={6}
+            maxLength={16}
+            autoComplete='name'
             onChange={(e) => {
-              setName(e.target.value);
+              handleForm(e);
             }}
           />
         </div>
+
         <div className='flex flex-col gap-1'>
           <Label> Email </Label>
           <Input
-            placeholder='Enter your email'
+            placeholder='name@example.com'
             icon={Mail}
-            value={name}
+            id='email'
+            required
+            autoComplete='email'
             onChange={(e) => {
-              setName(e.target.value);
+              handleForm(e);
             }}
           />
         </div>
@@ -114,10 +152,20 @@ const SignUpForm: React.FC = () => {
             placeholder='Enter your password'
             icon={Lock}
             type='password'
+            id='password'
+            required
+            minLength={8}
+            maxLength={12}
+            autoComplete='current-password'
+            onChange={(e) => {
+              handleForm(e);
+            }}
           />
         </div>
 
-        <Button className='mt-3'>Sign Up</Button>
+        <Button className='mt-3' type='submit'>
+          Sign Up
+        </Button>
 
         <div className='w-full flex gap-5 items-center justify-center'>
           <p className='text-center text-sm mt-1'>Don't have an account?</p>
