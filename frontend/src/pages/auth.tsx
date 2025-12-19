@@ -5,25 +5,43 @@ import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { User, Mail, Lock } from "lucide-react";
-import { iUserSignupdata } from "@/types";
+import { iUserSignupdata, iUserLogindata } from "@/types";
 import "../App.css";
 
 const LoginForm: React.FC = () => {
-  const [name, setName] = useState("");
+  const [form, setForm] = useState<iUserLogindata>({
+    identifier: "",
+    password: "",
+  });
+
   const navigate = useNavigate();
 
+  function handleForm(e: React.ChangeEvent<HTMLInputElement>) {
+    const { id, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    console.log(form);
+  }
   return (
     <div className='w-screen h-screen flex items-center justify-center'>
-      <FormContainer>
+      <FormContainer onsubmit={handleSubmit}>
         <h1>Here will be logo</h1>
         <div className='flex flex-col gap-1'>
           <Label> Name or Email </Label>
           <Input
             placeholder='Enter name or email'
             icon={Mail}
-            value={name}
+            id='identifier'
+            required
+            autoComplete='username'
             onChange={(e) => {
-              setName(e.target.value);
+              handleForm(e);
             }}
           />
         </div>
@@ -33,10 +51,15 @@ const LoginForm: React.FC = () => {
           <Input
             placeholder='Enter your password'
             icon={Lock}
+            id='password'
             type='password'
+            autoComplete='current-password'
             required
             minLength={8}
             maxLength={12}
+            onChange={(e) => {
+              handleForm(e);
+            }}
           />
         </div>
 
@@ -61,7 +84,7 @@ const LoginForm: React.FC = () => {
             onClick={() => {
               navigate("/signup");
             }}
-            className='text-blue-600 font-medium cursor-pointer'>
+            className='text-blue-600 font-medium cursor-pointer underline'>
             Sign up
           </button>
         </div>
@@ -84,7 +107,7 @@ const LoginForm: React.FC = () => {
 };
 
 const SignUpForm: React.FC = () => {
-  const [Form, setForm] = useState<iUserSignupdata>({
+  const [form, setForm] = useState<iUserSignupdata>({
     name: "",
     email: "",
     password: "",
@@ -106,10 +129,9 @@ const SignUpForm: React.FC = () => {
 
   function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (Form.name.length < 6) return;
-    if (Form.password.length < 8) return;
-    if (!validateEmail(Form.email)) return;
-    
+    if (form.name.length < 6) return;
+    if (form.password.length < 8) return;
+    if (!validateEmail(form.email)) return;
   }
 
   return (

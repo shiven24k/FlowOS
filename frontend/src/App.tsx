@@ -11,20 +11,13 @@ function App() {
       element: <Home />,
     },
     {
-      path: "/auth/login",
-      element: <LoginForm />,
-      children: [
-        {
-          index: true,
-          path: "/login",
-          element: <LoginForm />,
-        },
-        {
-          path: "/signup",
-          element: <SignUpForm />,
-        },
-      ],
+      path :'/login',
+      element:<LoginForm/>
     },
+    {
+      path :'/signup',
+      element:<SignUpForm/>
+    }
   ]);
   return <RouterProvider router={router} />;
 }

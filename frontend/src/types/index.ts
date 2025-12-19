@@ -3,5 +3,9 @@ interface iUserSignupdata {
   email: string;
   password: string;
 }
+interface iUserLogindata {
+ identifier:string;
+  password: string;
+}
 
-export { iUserSignupdata };
+export { iUserSignupdata,iUserLogindata };
