@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { User, Mail, Lock } from "lucide-react";
 import { iUserSignupdata, iUserLogindata } from "@/types";
+import { handleSignUp } from "../apis/index";
 import "../App.css";
 
 const LoginForm: React.FC = () => {
@@ -136,14 +137,13 @@ const SignUpForm: React.FC = () => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
   }
-
   function validatePassword(password: string) {
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
     return passwordRegex.test(password);
   }
 
-  function submitForm(e: React.FormEvent<HTMLFormElement>) {
+  async function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!validateUsername(form.name)) return throwInputError("name");
     console.log(validatePassword(form.password));
@@ -151,6 +151,7 @@ const SignUpForm: React.FC = () => {
     if (!validateEmail(form.email)) return throwInputError("email");
     console.log(form.password);
     console.log("sucess");
+    // const isSuccess = await handleSignUp(form);
   }
 
   return (
