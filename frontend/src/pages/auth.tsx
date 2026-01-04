@@ -113,6 +113,8 @@ const SignUpForm: React.FC = () => {
     password: "",
   });
 
+  const [error, setError] = useState<boolean>(false);
+  const [invalidField, setInvalidField] = useState<string>("");
   const navigate = useNavigate();
 
   function handleForm(e: React.ChangeEvent<HTMLInputElement>) {
@@ -122,16 +124,33 @@ const SignUpForm: React.FC = () => {
     }));
   }
 
+  function throwInputError(fieldName: string) {
+    setError(true);
+    setInvalidField(fieldName);
+  }
+  function validateUsername(username: string) {
+    const regex = /^[a-zA-Z][a-zA-Z0-9_]{2,15}$/;
+    return regex.test(username);
+  }
   function validateEmail(email: string) {
-    const emailPattern = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
+  }
+
+  function validatePassword(password: string) {
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+    return passwordRegex.test(password);
   }
 
   function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (form.name.length < 6) return;
-    if (form.password.length < 8) return;
-    if (!validateEmail(form.email)) return;
+    if (!validateUsername(form.name)) return throwInputError("name");
+    console.log(validatePassword(form.password));
+    if (!validatePassword(form.password)) return throwInputError("password");
+    if (!validateEmail(form.email)) return throwInputError("email");
+    console.log(form.password);
+    console.log("sucess");
   }
 
   return (
@@ -148,10 +167,20 @@ const SignUpForm: React.FC = () => {
             minLength={6}
             maxLength={16}
             autoComplete='name'
+            className={
+              error === true && invalidField === "name"
+                ? "border border-red-400"
+                : ""
+            }
             onChange={(e) => {
               handleForm(e);
             }}
           />
+          {error === true && invalidField === "name" && (
+            <span className='text-red-400'>
+              Username must start with a letter and contain no spaces.
+            </span>
+          )}
         </div>
 
         <div className='flex flex-col gap-1'>
@@ -161,11 +190,22 @@ const SignUpForm: React.FC = () => {
             icon={Mail}
             id='email'
             required
+            type='email'
             autoComplete='email'
+            className={
+              error === true && invalidField === "email"
+                ? "border border-red-400"
+                : ""
+            }
             onChange={(e) => {
               handleForm(e);
             }}
           />
+          {error === true && invalidField === "email" && (
+            <span className='text-red-400'>
+              Please enter a valid email adress.
+            </span>
+          )}
         </div>
 
         <div className='flex flex-col gap-1'>
@@ -179,10 +219,20 @@ const SignUpForm: React.FC = () => {
             minLength={8}
             maxLength={12}
             autoComplete='current-password'
+            className={
+              error === true && invalidField === "password"
+                ? "border border-red-400"
+                : ""
+            }
             onChange={(e) => {
               handleForm(e);
             }}
           />
+          {error === true && invalidField === "password" && (
+            <span className='text-red-400'>
+              Password must include uppercase, lowercase, number, and symbol.
+            </span>
+          )}
         </div>
 
         <Button className='mt-3' type='submit'>
