@@ -1,27 +1,48 @@
-import type React from "react";
-import { User, Mail, Lock } from "lucide-react";
-import "../App.css";
+import React, { useState } from "react";
 import { FormContainer } from "../components/ui/form";
 import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { User, Mail, Lock } from "lucide-react";
+import { iUserSignupdata, iUserLogindata } from "@/types";
+import { handleSignUp } from "../apis/index";
+import "../App.css";
 
-const LoginForm: React.FC<{ onToggle: () => void }> = ({ onToggle}) => {
-  const [name, setName] = useState("");
+const LoginForm: React.FC = () => {
+  const [form, setForm] = useState<iUserLogindata>({
+    identifier: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  function handleForm(e: React.ChangeEvent<HTMLInputElement>) {
+    const { id, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    console.log(form);
+  }
   return (
     <div className='w-screen h-screen flex items-center justify-center'>
-      <FormContainer>
+      <FormContainer onsubmit={handleSubmit}>
         <h1>Here will be logo</h1>
         <div className='flex flex-col gap-1'>
           <Label> Name or Email </Label>
           <Input
             placeholder='Enter name or email'
             icon={Mail}
-            value={name}
+            id='identifier'
+            required
+            autoComplete='username'
             onChange={(e) => {
-              setName(e.target.value);
+              handleForm(e);
             }}
           />
         </div>
@@ -31,7 +52,15 @@ const LoginForm: React.FC<{ onToggle: () => void }> = ({ onToggle}) => {
           <Input
             placeholder='Enter your password'
             icon={Lock}
+            id='password'
             type='password'
+            autoComplete='current-password'
+            required
+            minLength={8}
+            maxLength={12}
+            onChange={(e) => {
+              handleForm(e);
+            }}
           />
         </div>
 
@@ -46,13 +75,17 @@ const LoginForm: React.FC<{ onToggle: () => void }> = ({ onToggle}) => {
           </button>
         </div>
 
-        <Button className='mt-3'>Sign In</Button>
+        <Button className='mt-3' type='submit'>
+          Sign In
+        </Button>
 
         <div className='w-full flex gap-5 items-center justify-center'>
           <p className='text-center text-sm mt-1'>Don't have an account?</p>
           <button
-            onClick={onToggle}
-            className='text-blue-600 font-medium cursor-pointer'>
+            onClick={() => {
+              navigate("/signup");
+            }}
+            className='text-blue-600 font-medium cursor-pointer underline'>
             Sign up
           </button>
         </div>
@@ -74,33 +107,106 @@ const LoginForm: React.FC<{ onToggle: () => void }> = ({ onToggle}) => {
   );
 };
 
-const SignUpForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
-  const [name, setName] = useState("");
+const SignUpForm: React.FC = () => {
+  const [form, setForm] = useState<iUserSignupdata>({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState<boolean>(false);
+  const [invalidField, setInvalidField] = useState<string>("");
+  const navigate = useNavigate();
+
+  function handleForm(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm((prev) => ({
+      ...prev,
+      [e.target.id]: e.target.value,
+    }));
+  }
+
+  function throwInputError(fieldName: string) {
+    setError(true);
+    setInvalidField(fieldName);
+  }
+  function validateUsername(username: string) {
+    const regex = /^[a-zA-Z][a-zA-Z0-9_]{2,15}$/;
+    return regex.test(username);
+  }
+  function validateEmail(email: string) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  }
+  function validatePassword(password: string) {
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+    return passwordRegex.test(password);
+  }
+
+  async function submitForm(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!validateUsername(form.name)) return throwInputError("name");
+    console.log(validatePassword(form.password));
+    if (!validatePassword(form.password)) return throwInputError("password");
+    if (!validateEmail(form.email)) return throwInputError("email");
+    console.log(form.password);
+    console.log("sucess");
+    // const isSuccess = await handleSignUp(form);
+  }
+
   return (
     <div className='w-screen h-screen flex items-center justify-center'>
-      <FormContainer>
+      <FormContainer onsubmit={submitForm}>
         <h1>Here will be logo</h1>
         <div className='flex flex-col gap-1'>
           <Label> Name </Label>
           <Input
             placeholder='Enter your name'
             icon={User}
-            value={name}
+            id='name'
+            required
+            minLength={6}
+            maxLength={16}
+            autoComplete='name'
+            className={
+              error === true && invalidField === "name"
+                ? "border border-red-400"
+                : ""
+            }
             onChange={(e) => {
-              setName(e.target.value);
+              handleForm(e);
             }}
           />
+          {error === true && invalidField === "name" && (
+            <span className='text-red-400'>
+              Username must start with a letter and contain no spaces.
+            </span>
+          )}
         </div>
+
         <div className='flex flex-col gap-1'>
           <Label> Email </Label>
           <Input
-            placeholder='Enter your email'
+            placeholder='name@example.com'
             icon={Mail}
-            value={name}
+            id='email'
+            required
+            type='email'
+            autoComplete='email'
+            className={
+              error === true && invalidField === "email"
+                ? "border border-red-400"
+                : ""
+            }
             onChange={(e) => {
-              setName(e.target.value);
+              handleForm(e);
             }}
           />
+          {error === true && invalidField === "email" && (
+            <span className='text-red-400'>
+              Please enter a valid email adress.
+            </span>
+          )}
         </div>
 
         <div className='flex flex-col gap-1'>
@@ -109,15 +215,37 @@ const SignUpForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
             placeholder='Enter your password'
             icon={Lock}
             type='password'
+            id='password'
+            required
+            minLength={8}
+            maxLength={12}
+            autoComplete='current-password'
+            className={
+              error === true && invalidField === "password"
+                ? "border border-red-400"
+                : ""
+            }
+            onChange={(e) => {
+              handleForm(e);
+            }}
           />
+          {error === true && invalidField === "password" && (
+            <span className='text-red-400'>
+              Password must include uppercase, lowercase, number, and symbol.
+            </span>
+          )}
         </div>
 
-        <Button className='mt-3'>Sign Up</Button>
+        <Button className='mt-3' type='submit'>
+          Sign Up
+        </Button>
 
         <div className='w-full flex gap-5 items-center justify-center'>
           <p className='text-center text-sm mt-1'>Don't have an account?</p>
           <button
-            onClick={onToggle}
+            onClick={() => {
+              navigate("/login");
+            }}
             className='text-blue-600 underline font-medium cursor-pointer '>
             Login
           </button>
@@ -140,21 +268,4 @@ const SignUpForm: React.FC<{ onToggle: () => void }> = ({ onToggle }) => {
   );
 };
 
-const Auth: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
-    const toggleForm = () => {
-    setIsLogin(!isLogin);
-  };
-  return (
-    <>
-      {isLogin ? (
-        <LoginForm onToggle={toggleForm}/>
-      ):(
-        <SignUpForm onToggle={toggleForm}/>
-      )}
-    </>
-  )
-
-}
-
-export { Auth };
+export { SignUpForm, LoginForm };
