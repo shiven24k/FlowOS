@@ -31,8 +31,10 @@ const LoginForm: React.FC = () => {
   }
   return (
     <div className='w-screen h-screen flex items-center justify-center'>
-      <FormContainer onsubmit={handleSubmit}>
-        <h1>Here will be logo</h1>
+      <FormContainer onsubmit={handleSubmit} id='loginForm'>
+        <div className='w-full flex items-center justify-center'>
+          <h1 className='text-sm lg:text-2xl font-semibold'>Welcome Back!</h1>
+        </div>
         <div className='flex flex-col gap-1'>
           <Label> Name or Email </Label>
           <Input
@@ -146,18 +148,20 @@ const SignUpForm: React.FC = () => {
   async function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!validateUsername(form.name)) return throwInputError("name");
-    console.log(validatePassword(form.password));
     if (!validatePassword(form.password)) return throwInputError("password");
     if (!validateEmail(form.email)) return throwInputError("email");
-    console.log(form.password);
     console.log("sucess");
     // const isSuccess = await handleSignUp(form);
   }
 
   return (
     <div className='w-screen h-screen flex items-center justify-center'>
-      <FormContainer onsubmit={submitForm}>
-        <h1>Here will be logo</h1>
+      <FormContainer onsubmit={submitForm} id='signupForm'>
+        <div className='w-full flex items-center justify-center'>
+          <h1 className='text-sm lg:text-2xl font-semibold'>
+            Welcome to Kanflo
+          </h1>
+        </div>
         <div className='flex flex-col gap-1'>
           <Label> Name </Label>
           <Input
