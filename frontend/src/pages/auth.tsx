@@ -4,7 +4,7 @@ import { Label } from "../components/ui/label";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { User, Mail, Lock } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { iUserSignupdata, iUserLogindata } from "@/types";
 import { handleSignUp } from "../apis/index";
 import "../App.css";
@@ -14,8 +14,14 @@ const LoginForm: React.FC = () => {
     identifier: "",
     password: "",
   });
+  const [error, setError] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [invalidField, setInvalidField] = useState<string>("");
 
   const navigate = useNavigate();
+  function togglePassword() {
+    setShowPassword((prev) => !prev);
+  }
 
   function handleForm(e: React.ChangeEvent<HTMLInputElement>) {
     const { id, value } = e.target;
@@ -51,19 +57,42 @@ const LoginForm: React.FC = () => {
 
         <div className='flex flex-col gap-1'>
           <Label>Password</Label>
-          <Input
-            placeholder='Enter your password'
-            icon={Lock}
-            id='password'
-            type='password'
-            autoComplete='current-password'
-            required
-            minLength={8}
-            maxLength={12}
-            onChange={(e) => {
-              handleForm(e);
-            }}
-          />
+
+          <div className='relative'>
+            <Input
+              placeholder='Enter your password'
+              icon={Lock}
+              type={showPassword ? "text" : "password"}
+              id='password'
+              required
+              minLength={8}
+              maxLength={12}
+              autoComplete='current-password'
+              className={
+                error === true && invalidField === "password"
+                  ? "border border-red-400 pr-10"
+                  : "pr-10"
+              }
+              onChange={handleForm}
+            />
+
+            <button
+              type='button'
+              onClick={togglePassword}
+              className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 '>
+              {showPassword ? (
+                <EyeOff size={18} className='cursor-pointer' />
+              ) : (
+                <Eye size={18} className='cursor-pointer' />
+              )}
+            </button>
+          </div>
+
+          {error === true && invalidField === "password" && (
+            <span className='text-red-400'>
+              Password must include uppercase, lowercase, number, and symbol.
+            </span>
+          )}
         </div>
 
         <div className='flex items-center justify-between text-sm'>
@@ -118,8 +147,12 @@ const SignUpForm: React.FC = () => {
 
   const [error, setError] = useState<boolean>(false);
   const [invalidField, setInvalidField] = useState<string>("");
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const navigate = useNavigate();
 
+  function togglePassword() {
+    setShowPassword((prev) => !prev);
+  }
   function handleForm(e: React.ChangeEvent<HTMLInputElement>) {
     setForm((prev) => ({
       ...prev,
@@ -150,7 +183,7 @@ const SignUpForm: React.FC = () => {
     if (!validateUsername(form.name)) return throwInputError("name");
     if (!validatePassword(form.password)) return throwInputError("password");
     if (!validateEmail(form.email)) return throwInputError("email");
-    console.log("sucess");
+    console.log("hiiiiii");
     // const isSuccess = await handleSignUp(form);
   }
 
@@ -215,24 +248,37 @@ const SignUpForm: React.FC = () => {
 
         <div className='flex flex-col gap-1'>
           <Label>Password</Label>
-          <Input
-            placeholder='Enter your password'
-            icon={Lock}
-            type='password'
-            id='password'
-            required
-            minLength={8}
-            maxLength={12}
-            autoComplete='current-password'
-            className={
-              error === true && invalidField === "password"
-                ? "border border-red-400"
-                : ""
-            }
-            onChange={(e) => {
-              handleForm(e);
-            }}
-          />
+
+          <div className='relative'>
+            <Input
+              placeholder='Enter your password'
+              icon={Lock}
+              type={showPassword ? "text" : "password"}
+              id='password'
+              required
+              minLength={8}
+              maxLength={12}
+              autoComplete='current-password'
+              className={
+                error === true && invalidField === "password"
+                  ? "border border-red-400 pr-10"
+                  : "pr-10"
+              }
+              onChange={handleForm}
+            />
+
+            <button
+              type='button'
+              onClick={togglePassword}
+              className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 '>
+              {showPassword ? (
+                <EyeOff size={18} className='cursor-pointer' />
+              ) : (
+                <Eye size={18} className='cursor-pointer' />
+              )}
+            </button>
+          </div>
+
           {error === true && invalidField === "password" && (
             <span className='text-red-400'>
               Password must include uppercase, lowercase, number, and symbol.
