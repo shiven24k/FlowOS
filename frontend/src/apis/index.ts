@@ -1,5 +1,5 @@
-const API_URL = "localhost8000"; //backend url this will be in .env file tho
-import { iUserSignupdata } from "@/types";
+import { iUserLogindata, iUserSignupdata } from "@/types";
+const API_URL = "http://localhost:8000";
 
 async function handleSignUp(formdata: iUserSignupdata) {
   try {
@@ -21,4 +21,25 @@ async function handleSignUp(formdata: iUserSignupdata) {
   }
 }
 
-export { handleSignUp };
+async function handleLogin(formdata: iUserLogindata) {
+  try {
+    const response = await fetch(`${API_URL}/api/user/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(formdata),
+    });
+    if (response.status === 200) {
+      return true;
+    }
+    if (response.status != 200) {
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export { handleSignUp, handleLogin };
