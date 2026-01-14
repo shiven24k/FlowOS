@@ -4,8 +4,8 @@ interface iUserSignupdata {
   password: string;
 }
 interface iUserLogindata {
- identifier:string;
+  email: string;
   password: string;
 }
 
-export { iUserSignupdata,iUserLogindata };
+export { iUserSignupdata, iUserLogindata };
