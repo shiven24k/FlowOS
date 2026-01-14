@@ -6,6 +6,8 @@ import { Button } from "../components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { iUserSignupdata, iUserLogindata } from "@/types";
+import { GoogleLogin } from "@react-oauth/google";
+import { validateEmail, validatePassword, validateUsername } from "../utils";
 import { handleSignUp } from "../apis/index";
 import "../App.css";
 
@@ -35,6 +37,12 @@ const LoginForm: React.FC = () => {
     e.preventDefault();
     console.log(form);
   }
+  const responseMessage = (response: any) => {
+    console.log(response);
+  };
+  const errorMessage = () => {
+    console.log("Login failed");
+  };
   return (
     <div className='w-screen h-screen flex items-center justify-center'>
       <FormContainer onsubmit={handleSubmit} id='loginForm'>
@@ -121,18 +129,16 @@ const LoginForm: React.FC = () => {
           </button>
         </div>
 
-        <p className='text-center text-sm my-2'>Or continue with</p>
-
-        <Button
-          variant='outline'
-          icon={() => (
-            <img
-              src='https://www.svgrepo.com/show/475656/google-color.svg'
-              className='w-5'
-            />
-          )}>
-          Google
-        </Button>
+        <p className='text-center text-sm my-2'>Or</p>
+        <div className='w-full max-w-sm  mx-auto'>
+          <GoogleLogin
+            theme='outline'
+            size='large'
+            logo_alignment='center'
+            text='continue_with'
+            onSuccess={responseMessage}
+            onError={errorMessage}></GoogleLogin>
+        </div>
       </FormContainer>
     </div>
   );
@@ -164,29 +170,20 @@ const SignUpForm: React.FC = () => {
     setError(true);
     setInvalidField(fieldName);
   }
-  function validateUsername(username: string) {
-    const regex = /^[a-zA-Z][a-zA-Z0-9_]{2,15}$/;
-    return regex.test(username);
-  }
-  function validateEmail(email: string) {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
-  }
-  function validatePassword(password: string) {
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
-    return passwordRegex.test(password);
-  }
 
   async function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!validateUsername(form.name)) return throwInputError("name");
     if (!validatePassword(form.password)) return throwInputError("password");
     if (!validateEmail(form.email)) return throwInputError("email");
-    console.log("hiiiiii");
     // const isSuccess = await handleSignUp(form);
   }
-
+  const responseMessage = (response: any) => {
+    console.log(response);
+  };
+  const errorMessage = () => {
+    console.log("Login failed");
+  };
   return (
     <div className='w-screen h-screen flex items-center justify-center'>
       <FormContainer onsubmit={submitForm} id='signupForm'>
@@ -301,18 +298,17 @@ const SignUpForm: React.FC = () => {
           </button>
         </div>
 
-        <p className='text-center text-sm my-2'>Or continue with</p>
+        <p className='text-center text-sm my-2'>Or</p>
 
-        <Button
-          variant='outline'
-          icon={() => (
-            <img
-              src='https://www.svgrepo.com/show/475656/google-color.svg'
-              className='w-5'
-            />
-          )}>
-          Google
-        </Button>
+        <div className='w-full max-w-sm  mx-auto'>
+          <GoogleLogin
+            theme='outline'
+            size='large'
+            logo_alignment='center'
+            text='continue_with'
+            onSuccess={responseMessage}
+            onError={errorMessage}></GoogleLogin>
+        </div>
       </FormContainer>
     </div>
   );
