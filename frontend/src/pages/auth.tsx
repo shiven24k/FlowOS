@@ -8,23 +8,28 @@ import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { iUserSignupdata, iUserLogindata } from "@/types";
 import { GoogleLogin } from "@react-oauth/google";
 import { validateEmail, validatePassword, validateUsername } from "../utils";
-import { handleSignUp } from "../apis/index";
+import { handleLogin, handleSignUp } from "../apis/index";
 import "../App.css";
 
 const LoginForm: React.FC = () => {
   const [form, setForm] = useState<iUserLogindata>({
-    identifier: "",
+    email: "",
     password: "",
   });
+
   const [error, setError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [invalidField, setInvalidField] = useState<string>("");
 
   const navigate = useNavigate();
+
   function togglePassword() {
     setShowPassword((prev) => !prev);
   }
-
+  function throwInputError(fieldName: string) {
+    setError(true);
+    setInvalidField(fieldName);
+  }
   function handleForm(e: React.ChangeEvent<HTMLInputElement>) {
     const { id, value } = e.target;
     setForm((prev) => ({
@@ -33,9 +38,19 @@ const LoginForm: React.FC = () => {
     }));
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     console.log(form);
+    if (!validateEmail(form.email)) return throwInputError("email");
+    if (!validatePassword(form.password)) return throwInputError("password");
+    try {
+      const response = await handleLogin(form);
+      if (!response) {
+        console.log("failed to login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
   const responseMessage = (response: any) => {
     console.log(response);
@@ -45,16 +60,21 @@ const LoginForm: React.FC = () => {
   };
   return (
     <div className='w-screen h-screen flex items-center justify-center'>
-      <FormContainer onsubmit={handleSubmit} id='loginForm'>
+      <FormContainer
+        onsubmit={(e: any) => {
+          handleSubmit(e);
+        }}
+        id='loginForm'>
         <div className='w-full flex items-center justify-center'>
           <h1 className='text-sm lg:text-2xl font-semibold'>Welcome Back!</h1>
         </div>
         <div className='flex flex-col gap-1'>
-          <Label> Name or Email </Label>
+          <Label> Email </Label>
           <Input
-            placeholder='Enter name or email'
+            placeholder='Enter your email'
+            type='email'
             icon={Mail}
-            id='identifier'
+            id='email'
             required
             autoComplete='username'
             onChange={(e) => {
@@ -145,6 +165,7 @@ const LoginForm: React.FC = () => {
 };
 
 const SignUpForm: React.FC = () => {
+  
   const [form, setForm] = useState<iUserSignupdata>({
     name: "",
     email: "",
@@ -176,7 +197,14 @@ const SignUpForm: React.FC = () => {
     if (!validateUsername(form.name)) return throwInputError("name");
     if (!validatePassword(form.password)) return throwInputError("password");
     if (!validateEmail(form.email)) return throwInputError("email");
-    // const isSuccess = await handleSignUp(form);
+    try {
+      const response = await handleSignUp(form);
+      if (!response) {
+        console.log("failed");
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
   }
   const responseMessage = (response: any) => {
     console.log(response);
